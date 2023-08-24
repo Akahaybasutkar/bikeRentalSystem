@@ -1,4 +1,5 @@
 import time
+from timeit import default_timer as timer
 class BikeShop:
 
     hourlyPrice = 5
@@ -19,22 +20,63 @@ class BikeShop:
         print()
         return self.bike_avl
 
-    def rentBike(self, person, type="hourly"):
-        if self.bike_avl > 1:
-            person.start_time = time.perf_counter()
-            self.bike_avl -= 1
-            person.bikes_rented += 1
-            person.current_rent_type = "hourly"
-            print("Bike rented")
+    def rentBike(self, person, bikes):
+        """Used to rent bikes \nTakes parameter Person(Object), No of Bikes needed, type of rent
+        :param person:
+        :param bikes:
+        :param type:
+        :return:
+        """
+        if self.bike_avl >= 1 and self.bike_avl >= bikes:
+            ask = input("Enter the type of rental\nhourly, daily, weekly\n")
+
+            if ask.lower() == "hourly":
+                person.current_rent_type = "hourly"
+                person.start_time = timer()
+                person.bikes_rented += 1
+                self.bike_avl -= 1
+
+            elif ask.lower() == "daily":
+                person.current_rent_type = "daily"
+                person.start_time = timer()
+                person.bikes_rented += 1
+                self.bike_avl -= 1
+
+            elif ask.lower() == "weekly":
+                person.current_rent_type = "weekly"
+                person.start_time = timer()
+                person.bikes_rented += 1
+                self.bike_avl -= 1
+            else:
+                print("Wrong rental type entered!!!")
+
+        else:
+            print("Bikes not available\nSorry for inconvinence")
+
 
     def returnBike(self, person):
-        person.end_time = time.perf_counter()
-        total_time = (person.end_time - person.start_time) / 3600
-        person.bikes_rented -= 1
-        self.bike_avl += 1
-        print("Bike returned")
-        person.total_fare = total_time * 5
+
+        if person.current_rent_type == "hourly":
+            person.end_time = timer()
+            person.time = person.end_time - person.start_time
+            person.total_fare = (person.time / 3600) * 5
+
+        elif person.current_rent_type == "daily":
+            person.end_time = timer()
+            person.time = person.end_time - person.start_time
+            person.total_fare = (person.time / (24 * 3600) ) * 20
+
+        elif person.current_rent_type == "weekly":
+            person.end_time = timer()
+            person.time = person.end_time - person.start_time
+            person.total_fare = (person.time / (7 * 24 * 3600) ) * 60
+
+        print("Bike returned.")
         person.checkBill()
+
+        if person.bikes_rented == 0:
+            person.total_fare = 0
+
 
 class Person:
 
@@ -44,6 +86,7 @@ class Person:
         self.current_rent_type = None
         self.start_time = 0
         self.end_time = 0
+        self.time = 0
         self.total_fare = 0
 
     def rentedBikes(self):
@@ -61,17 +104,13 @@ class Person:
         self.bill += amount
 
     def checkBill(self):
-        print("Your bill is: {:.2f}".format(self.total_fare))
+        print("Your bill is: ${:.2f}".format(self.total_fare))
 
-
-p1 = Person("Akshay")
-p1.info()
 
 shop = BikeShop()
+p1 = Person("Akshay")
 shop.addBikes(10)
 
-shop.rentBike(p1, "hourly")
-time.sleep(5)
-
+shop.rentBike(p1, 2)
+time.sleep(3)
 shop.returnBike(p1)
-
