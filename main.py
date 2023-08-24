@@ -1,5 +1,7 @@
 import time
 from timeit import default_timer as timer
+
+
 class BikeShop:
 
     hourlyPrice = 5
@@ -60,13 +62,51 @@ class BikeShop:
         else:
             print("Bikes not available\nSorry for inconvenience")
 
+    def familyRental(self, person, bikes):
+
+        """Used to rent bikes \nTakes parameter Person(Object), No of Bikes needed, type of rent
+        :param person:
+        :param bikes:
+        :param type:
+        :return:
+        """
+        if self.bike_avl >= 1 and self.bike_avl >= bikes:
+            person.isFamily = True
+            ask = input("Enter the type of rental(hourly, daily, weekly): \n")
+
+            if ask.lower() == "hourly":
+                person.current_rent_type = "hourly"
+                person.start_time = timer()
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
+                print("Bike rented")
+
+            elif ask.lower() == "daily":
+                person.current_rent_type = "daily"
+                person.start_time = timer()
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
+                print("Bike rented")
+
+            elif ask.lower() == "weekly":
+                person.current_rent_type = "weekly"
+                person.start_time = timer()
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
+                print("Bike rented")
+
+            else:
+                print("Wrong rental type entered!!!")
+
+        else:
+            print("Bikes not available\nSorry for inconvenience")
 
     def returnBike(self, person):
 
         if person.current_rent_type == "hourly":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = ((person.time / 3600) * 5) * person.bikes_rented
+            person.total_fare = ((person.time / 3600) * 3600) * person.bikes_rented
 
         elif person.current_rent_type == "daily":
             person.end_time = timer()
@@ -78,11 +118,8 @@ class BikeShop:
             person.time = person.end_time - person.start_time
             person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) * person.bikes_rented
 
-        elif person.current_rent_type == "family":
-            person.end_time = timer()
-            person.time = person.end_time - person.start_time
-            person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) * person.bikes_rented
-            person.total_fare %= 0.7
+        if person.isFamily:
+            person.total_fare *= 0.7
 
         print("Bike returned.")
         person.checkBill()
@@ -101,6 +138,7 @@ class Person:
         self.end_time = 0
         self.time = 0
         self.total_fare = 0
+        self.isFamily = False
 
     def rentedBikes(self):
         print(f"You have rented {self.bikes_rented} bikes")
@@ -109,18 +147,25 @@ class Person:
     def info(self):
         print("Hello", self.name)
         print(f"Current rented bikes are: {self.bikes_rented}")
-        pass
+        print("Your Bill is: {:.2f}".format(self.total_fare))
         print()
 
     def checkBill(self):
         print("Your bill is: ${:.2f}".format(self.total_fare))
+
+    def payBill(self, amount):
+
+        if self.total_fare > amount:
+            self.total_fare -= amount
+        else:
+            print("Amount greater tha pending amount")
 
 
 shop = BikeShop()
 p1 = Person("Akshay")
 shop.addBikes(10)
 
-shop.rentBike(p1, 2)
+shop.familyRental(p1, 2)
 time.sleep(5)
 shop.returnBike(p1)
-p1.checkBill()
+p1.info()
