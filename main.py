@@ -33,25 +33,32 @@ class BikeShop:
             if ask.lower() == "hourly":
                 person.current_rent_type = "hourly"
                 person.start_time = timer()
-                person.bikes_rented += 1
-                self.bike_avl -= 1
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
 
             elif ask.lower() == "daily":
                 person.current_rent_type = "daily"
                 person.start_time = timer()
-                person.bikes_rented += 1
-                self.bike_avl -= 1
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
 
             elif ask.lower() == "weekly":
                 person.current_rent_type = "weekly"
                 person.start_time = timer()
-                person.bikes_rented += 1
-                self.bike_avl -= 1
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
+
+            elif ask.lower() == "family":
+                person.current_rent_type = "weekly"
+                person.start_time = timer()
+                person.bikes_rented += bikes
+                self.bike_avl -= bikes
+
             else:
                 print("Wrong rental type entered!!!")
 
         else:
-            print("Bikes not available\nSorry for inconvinence")
+            print("Bikes not available\nSorry for inconvenience")
 
 
     def returnBike(self, person):
@@ -64,12 +71,18 @@ class BikeShop:
         elif person.current_rent_type == "daily":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = (person.time / (24 * 3600) ) * 20
+            person.total_fare = (person.time / (24 * 3600)) * 20
 
         elif person.current_rent_type == "weekly":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = (person.time / (7 * 24 * 3600) ) * 60
+            person.total_fare = (person.time / (7 * 24 * 3600)) * 60
+
+        elif person.current_rent_type == "family":
+            person.end_time = timer()
+            person.time = person.end_time - person.start_time
+            person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) - 30
+            person.total_fare %= 0.7
 
         print("Bike returned.")
         person.checkBill()
@@ -111,6 +124,4 @@ shop = BikeShop()
 p1 = Person("Akshay")
 shop.addBikes(10)
 
-shop.rentBike(p1, 2)
-time.sleep(3)
-shop.returnBike(p1)
+
