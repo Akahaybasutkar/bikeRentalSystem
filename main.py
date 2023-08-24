@@ -28,7 +28,7 @@ class BikeShop:
         :return:
         """
         if self.bike_avl >= 1 and self.bike_avl >= bikes:
-            ask = input("Enter the type of rental\nhourly, daily, weekly\n")
+            ask = input("Enter the type of rental(hourly, daily, weekly): \n")
 
             if ask.lower() == "hourly":
                 person.current_rent_type = "hourly"
@@ -66,22 +66,22 @@ class BikeShop:
         if person.current_rent_type == "hourly":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = (person.time / 3600) * 5
+            person.total_fare = ((person.time / 3600) * 5) * person.bikes_rented
 
         elif person.current_rent_type == "daily":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = (person.time / (24 * 3600)) * 20
+            person.total_fare = ((person.time / (24 * 3600)) * 20) * person.bikes_rented
 
         elif person.current_rent_type == "weekly":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = (person.time / (7 * 24 * 3600)) * 60
+            person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) * person.bikes_rented
 
         elif person.current_rent_type == "family":
             person.end_time = timer()
             person.time = person.end_time - person.start_time
-            person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) - 30
+            person.total_fare = ((person.time / (7 * 24 * 3600)) * 60) * person.bikes_rented
             person.total_fare %= 0.7
 
         print("Bike returned.")
@@ -112,10 +112,6 @@ class Person:
         pass
         print()
 
-    def addBill(self, amount):
-        print("Check1")
-        self.bill += amount
-
     def checkBill(self):
         print("Your bill is: ${:.2f}".format(self.total_fare))
 
@@ -124,4 +120,7 @@ shop = BikeShop()
 p1 = Person("Akshay")
 shop.addBikes(10)
 
-
+shop.rentBike(p1, 2)
+time.sleep(5)
+shop.returnBike(p1)
+p1.checkBill()
