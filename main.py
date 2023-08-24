@@ -47,9 +47,9 @@ class BikeShop:
     def billing(self, person, type="hourly"):
 
         if type.lower() == "hourly":
-            self.fare = (self.total_time * 3600) * 5
+            self.fare = (self.total_time / 3600) * 5
         print("Your fare is: ", self.fare)
-        person.self.bill += int(self.fare)
+        person.addBill(self.fare)
         return self.fare
 
 
@@ -72,6 +72,13 @@ class Person:
         print(f"Your rent history: {self.rent_history}")
         print()
 
+    def addBill(self, amount):
+        print("Check1")
+        self.bill += amount
+
+    def checkBill(self):
+        print(f"Your bill is: {self.bill}")
+
 
 p1 = Person("Akshay")
 p1.info()
@@ -80,4 +87,9 @@ shop = BikeShop()
 shop.checkBikes()
 shop.addBikes(10)
 
+shop.rentBike(p1, "hourly")
+time.sleep(10)
+shop.returnBike(p1)
 
+print(p1.bill)
+p1.checkBill()
